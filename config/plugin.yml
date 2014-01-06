@@ -1,9 +1,0 @@
-name: Eshop
-description: Eshop plugin
-
-author: Juraj Jancuska
-authorEmail: jjancuska@gmail.com
-authorUrl: 
-
-dependencies:
-  plugins:
