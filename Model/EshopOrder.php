@@ -6,6 +6,9 @@
 * @copyright (c) 2010 Juraj Jancuska
 * @license MIT License - http://www.opensource.org/licenses/mit-license.php
 */
+
+App::uses('EshopAppModel', 'Eshop.Model');
+
 class EshopOrder extends EshopAppModel {
 
         /**
@@ -14,6 +17,7 @@ class EshopOrder extends EshopAppModel {
         * @var string
         */
 	public $name = 'EshopOrder';
+	public $useTable = 'eshopOrders';
 
         /**
          * Validation rules

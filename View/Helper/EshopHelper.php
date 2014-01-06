@@ -6,6 +6,9 @@
  * @package  Croogo
  * @author Juraj Jancuska <jjancuska@gmail.com>
  */
+
+App::uses('AppHelper', 'View/Helper');
+
 class EshopHelper extends AppHelper {
 
         /**
@@ -29,4 +32,4 @@ class EshopHelper extends AppHelper {
                                 $this->Layout->node('body') . $this->Layout->View->element('eshop_items_form', array('items' => $this->Layout->node['EshopItems'], 'plugin' => 'eshop')));
                 }
         }
-}?>
+}

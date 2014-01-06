@@ -7,33 +7,10 @@
  * @package  Croogo
  * @author Juraj Jancuska <jjancuska@gmail.com>
  */
+
+App::uses('CakeSchema', 'Model');
+ 
 class EshopActivation {
-        
-        /**
-         * Schema directory
-         *
-         * @var string
-         */
-        private $SchemaDir;
-
-        /**
-         * DB connection
-         *
-         * @var object
-         */
-        private $db;
-
-        /**
-         * Constructor
-         *
-         * @return vodi
-         */
-         public function  __construct() {
-
-                 $this->SchemaDir = APP.'plugins'.DS.'eshop'.DS.'config'.DS.'schemas';
-                 $this->db =& ConnectionManager::getDataSource('default');
-
-        }
 
         /**
          * Before onActivation
@@ -42,32 +19,7 @@ class EshopActivation {
          * @return boolean
          */
         public function beforeActivation(&$controller) {
-
-                App::Import('CakeSchema');
-                $CakeSchema = new CakeSchema();
-
-                // list schema files from config/schema dir
-                if (!$cake_schema_files = $this->_listSchemas($this->SchemaDir))
-                        return false;
-
-                // create table for each schema (if not exists)
-                foreach ($cake_schema_files as $schema_file) {
-                        $schema_name = substr($schema_file, 0, -4);
-                        $schema_class_name = Inflector::camelize($schema_name).'Schema';
-                        $table_name = $schema_name;
-
-                        if (!in_array($table_name, $this->db->_sources)) {
-                                 include_once($this->SchemaDir.DS.$schema_file);
-                                 $ActiveSchema = new $schema_class_name;
-                                 if(!$this->db->execute($this->db->createSchema($ActiveSchema, $table_name))) {
-                                         return false;
-                                 }
-                        }
-
-                }
-
-                return true;
-
+					return true;
         }
 
         /**
@@ -78,9 +30,14 @@ class EshopActivation {
          * @return void
          */
         public function onActivation(&$controller) {
-                
+						$schema = & new CakeSchema(array(
+									'name' => 'Eshop',
+									'path' => APP . 'Plugin' . DS . 'Eshop' . DS . 'Config' . DS . 'schema',
+										)
+						);
+						$schema = $schema->load();
                 // set Aco
-                $controller->Croogo->addAco('EshopEshopItems');
+                $controller->Croogo->addAco('EshopItems');
                 $controller->Croogo->addAco('EshopItems/admin_index');
                 $controller->Croogo->addAco('EshopItems/admin_add');
                 $controller->Croogo->addAco('EshopItems/admin_edit');
@@ -101,8 +58,7 @@ class EshopActivation {
                 $controller->Croogo->addAco('EshopOrders/add', array('registered', 'public'));
 
                 // set default config
-                $statuses = 'Waiting for acceptacion,Accepted,Canceled,Sended,
-                        Delivered,Rejected';
+                $statuses = 'Waiting for acceptacion,Accepted,Canceled,Sended,Delivered,Rejected';
                 $payement = 'Cash on delivery,Proforma invoice,Personally';
                 $shipping = 'Cash on delivery,Curier,Personally';
                 $vat = 20;
@@ -124,7 +80,7 @@ class EshopActivation {
                 );
 
                 // create basket summary block
-                if (!$controller->Block->save(array(
+                if (!$controller->Blocks->Block->save(array(
                         'region_id' => 4,
                         'title' => 'Eshop basket summary',
                         'alias' => 'eshopbasketsummary',
@@ -163,21 +119,7 @@ class EshopActivation {
          * @return boolean
          */
         public function beforeDeactivation(&$controller) {
-
-                // list schema files from config/schema dir
-                if (!$cake_schema_files = $this->_listSchemas($this->SchemaDir))
-                        return false;
-
-                // delete tables for each schema
-                foreach ($cake_schema_files as $schema_file) {
-                        $schema_name = substr($schema_file, 0, -4);
-                        $table_name = $schema_name;
-                        /*if(!$this->db->execute('DROP TABLE '.$table_name)) {
-                                return false;
-                        }*/
-                }
                 return true;
-
         }
 
         /**
@@ -196,31 +138,8 @@ class EshopActivation {
                 $controller->Croogo->removeAco('EshopOrders');
 
                 // remove eshop basket summary block
-                $controller->Block->deleteAll(array('Block.alias' => "eshopbasketsummary"));
+								$controller->Blocks->Block->deleteAll(array('Block.alias' => "eshopbasketsummary"));
         }
 
-        /**
-         * List schemas
-         *
-         * @return array
-         */
-        private function _listSchemas($dir = false) {
-
-                if (!$dir) return false;
-
-                $cake_schema_files = array();
-                if ($h = opendir($dir)) {
-                        while (false !== ($file = readdir($h))) {
-                                if (($file != ".") && ($file != "..")) {
-                                        $cake_schema_files[] = $file;
-                                }
-                        }
-                } else {
-                        return false;
-                }
-
-                return $cake_schema_files;
-
-        }
 }
 ?>

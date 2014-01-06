@@ -6,6 +6,9 @@
 * @copyright (c) 2010 Juraj Jancuska
 * @license MIT License - http://www.opensource.org/licenses/mit-license.php
 */
+
+App::uses('EshopAppModel', 'Eshop.Model');
+
 class EshopItem extends EshopAppModel {
 
         /**
@@ -14,6 +17,7 @@ class EshopItem extends EshopAppModel {
         * @var string
         */
 	public $name = 'EshopItem';
+	public $useTable = 'EshopItems';
 
         /**
          * Belongs To association

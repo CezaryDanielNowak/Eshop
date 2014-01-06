@@ -1,4 +1,7 @@
 <?php
+
+App::uses('AppModel', 'Model');
+
 class EshopAppModel extends AppModel {
 
         /**

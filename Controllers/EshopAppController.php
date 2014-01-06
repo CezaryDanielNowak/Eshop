@@ -1,4 +1,7 @@
 <?php
+
+App::uses('AppController', 'Controller');
+
 class EshopAppController extends AppController {
 
         public $components    = array('Cookie');
